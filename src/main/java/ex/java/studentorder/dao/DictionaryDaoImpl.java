@@ -10,11 +10,11 @@ import ex.java.studentorder.exception.DaoException;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
-//класс для доступа к БД
+// класс для доступа к БД
 public class DictionaryDaoImpl implements DictionaryDao{
-    //date access object обьект для доступа к данным
+    // date access object обьект для доступа к данным
     // подключнеие к postgreSql
-    //выделение отдельного метода для получения коннекта
+    // выделение отдельного метода для получения коннекта
      private static final String GET_STREET =
             "SELECT street_code, street_name FROM cat_street WHERE upper(street_name) like upper(?)";
      private static final String GET_PASSPORT_OFFICE =
@@ -31,12 +31,11 @@ public class DictionaryDaoImpl implements DictionaryDao{
                 Config.getProperty(Config.DB_PASSWORD));
         return con;
     }
-
+    // в каталоге улиц находит улицу по pattern
     public List<Street> findStreets(String pattern) throws DaoException {
-        //определить список улиц как результат
-        // создаем список обьектов улица
+        // определить список улиц как результат
+        // создаем список объектов улица
         List<Street> result = new LinkedList<>();
-
 
         try (Connection con = getConnection();
              PreparedStatement stmt = con.prepareStatement(GET_STREET)){
@@ -52,10 +51,9 @@ public class DictionaryDaoImpl implements DictionaryDao{
         return result;
     }
 
-    @Override
+    @Override // в каталоге паспортных столов находит ПС по areaId
     public List<PassportOffice> findPassportOffice(String areaId) throws DaoException {
         List<PassportOffice> resultP = new LinkedList<>();
-
 
         try (Connection con = getConnection();
              PreparedStatement stmt = con.prepareStatement(GET_PASSPORT_OFFICE)){
@@ -73,7 +71,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
         return resultP;
     }
 
-    @Override
+    @Override // в каталоге ЗАГСов находит ЗАГС по areaId
     public List<RegisterOffice> findRegisterOffice(String areaId) throws DaoException {
         List<RegisterOffice> resultR = new LinkedList<>();
 
@@ -94,7 +92,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
         return resultR;
     }
 
-    @Override
+    @Override // в каталоге поселений находит код области и название города/области/поселения по areaId
     public List<CountryArea> findAreas(String areaId) throws DaoException, SQLException {
         List<CountryArea> resultA = new LinkedList<>();
         String param1 = buildParam(areaId);
@@ -116,7 +114,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
         }
         return resultA;
     }
-
+    // конструирует areaId
     private String buildParam(String areaId) throws SQLException {
         if (areaId == null || areaId.trim().isEmpty()) {
             return "__0000000000";
