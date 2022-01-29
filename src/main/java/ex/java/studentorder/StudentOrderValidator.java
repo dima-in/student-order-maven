@@ -1,10 +1,12 @@
 package ex.java.studentorder;
 
+import ex.java.studentorder.dao.StudentOrderDaoImpl;
 import ex.java.studentorder.domain.*;
 import ex.java.studentorder.domain.children.AnswerChildren;
 import ex.java.studentorder.domain.register.AnswerCityRegister;
 import ex.java.studentorder.domain.student.AnswerStudent;
 import ex.java.studentorder.domain.wedding.AnswerWeddind;
+import ex.java.studentorder.exception.DaoException;
 import ex.java.studentorder.mail.AnswerMail;
 import ex.java.studentorder.validator.ChildrenValidator;
 import ex.java.studentorder.validator.CityRegisterValidator;
@@ -29,7 +31,7 @@ import java.util.List;
 
 public class StudentOrderValidator {
 // проверяет всю заявку методом checkAll()
-// обьявление переменных(ссылок) для обращения к классам
+// объявление переменных(ссылок) для обращения к классам
 // проверяющим каждый кусок заявления
     private CityRegisterValidator validatorCityRegistry;
     private WeddingValidator validatorWedding;
@@ -45,33 +47,30 @@ public class StudentOrderValidator {
          sendMail = new AnswerMail();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DaoException {
 
         StudentOrderValidator sov = new StudentOrderValidator();
         sov.checkAll();
     }
 
-    public void checkAll() {
+    public void checkAll() throws DaoException {
+        try {
         List<StudentOrder> soListCheck = readStudentOrders();
         // коллекция soList инициализируется коллекцией soListRead
         //передача завок в checkOneOrder(so)
         for(StudentOrder so : soListCheck){
             checkOneOrder(so);
         }
-
+    } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
-    public List<StudentOrder> readStudentOrders() { // получить заявление для проверки в виде обьекта типа ex.java.studentorder.domain.StudentOrder// типа ex.java.studentorder.domain.StudentOrder переменная so
-        //создание коллекции из 5 элементов.
-        List<StudentOrder> soListRead = new LinkedList<>();
-        //инициализация массива заявками
-        for (int i = 0; i < 5; i++){
-            //Метод buildStudentOrder(i)
-            //возвращает обьекты StudentOrder so и
-            //помещает в коллекцию soList
-            soListRead.add(SaveStudentOrder.buildStudentOrder(i));
-        }
-        return soListRead;
+    public List<StudentOrder> readStudentOrders() throws DaoException {
+        // получить заявление для проверки в виде обьекта типа
+        // ex.java.studentorder.domain.StudentOrder
+        // типа ex.java.studentorder.domain.StudentOrder переменная so
+       return new StudentOrderDaoImpl().getStudentOrders();
     }
     public void checkOneOrder(StudentOrder so){
             AnswerCityRegister answerCityRegistry = checkCityRegistr(so); // сохранениме результата проверки из городского реестра в переменную типа ex.java.studentorder.domain.register.AnswerCityRegistry ans....

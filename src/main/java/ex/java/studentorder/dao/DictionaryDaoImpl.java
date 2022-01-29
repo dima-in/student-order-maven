@@ -23,15 +23,11 @@ public class DictionaryDaoImpl implements DictionaryDao{
              "SELECT r_office_id, r_office_area_id, r_office_name FROM register_office WHERE r_office_area_id LIKE ?";
      public static final String GET_COUNTRY_AREA =
              "SELECT area_id, area_name FROM country_struct WHERE area_id LIKE ? AND area_id <> ?";
-//TODO refactoring make one method
+
     private Connection getConnection() throws SQLException {
-        Connection con = DriverManager.getConnection(
-                Config.getProperty(Config.DB_URL),
-                Config.getProperty(Config.DB_LOGIN),
-                Config.getProperty(Config.DB_PASSWORD));
-        return con;
+        return ConnectionBuilder.getConnection();
     }
-    // в каталоге улиц находит улицу по pattern
+    // в BD каталоге улиц находит улицу по pattern
     public List<Street> findStreets(String pattern) throws DaoException {
         // определить список улиц как результат
         // создаем список объектов улица

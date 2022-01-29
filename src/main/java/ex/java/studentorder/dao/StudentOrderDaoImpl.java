@@ -75,11 +75,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 //TODO refactoring make one method
 
     private Connection getConnection() throws SQLException {
-        Connection con = DriverManager.getConnection(
-                Config.getProperty(Config.DB_URL),
-                Config.getProperty(Config.DB_LOGIN),
-                Config.getProperty(Config.DB_PASSWORD));//avg
-        return con;
+        return ConnectionBuilder.getConnection();
     }
     // cохранение необработанных студенческих заявлений
     @Override
@@ -114,7 +110,6 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
                 gkRs.close();
 
                 saveChildren(con, so, result);
-
 
                 con.commit();// если все ок, проводим транзакцию
             } catch (SQLException ex) {
