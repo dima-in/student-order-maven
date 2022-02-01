@@ -21,7 +21,6 @@ public class DictionaryDaoImplTest {
     // создание объекта типа Logger для логирования класса
     private static final Logger logger = LoggerFactory.getLogger(DictionaryDaoImplTest.class);
 
-
     @BeforeClass // аннотация помечает метод, который будет выполняться
     // при запуске всех тестов (один раз)
     public static void startUp() throws Exception {
@@ -31,7 +30,7 @@ public class DictionaryDaoImplTest {
     public void testStreet() throws DaoException {
         LocalDateTime dt1 = LocalDateTime.now();
         LocalDateTime dt2 = LocalDateTime.now();
-        logger.trace("TEST {} {}", dt1, dt2);
+        logger.info("TEST {} {}", dt1, dt2);
 
         List<Street> d = new DictionaryDaoImpl().findStreets("росп");
         // assert утверждать, junit класс

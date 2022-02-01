@@ -3,6 +3,9 @@ package ex.java.studentorder.dao;
 import ex.java.studentorder.config.Config;
 import ex.java.studentorder.domain.*;
 import ex.java.studentorder.exception.DaoException;
+import org.postgresql.util.PSQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.sql.Date;
@@ -12,6 +15,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class StudentOrderDaoImpl implements StudentOrderDao{
+
+    private static  final Logger logger =
+            LoggerFactory.getLogger(StudentOrderDaoImpl.class);
 
     private static final String INSERT_ORDER = "INSERT INTO student_order(" +
             "student_order_status, student_order_date, h_sur_name, " + // 3
@@ -82,7 +88,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
     public Long saveStudentOrder(StudentOrder so) throws DaoException {
         Long result = -1L;
         try (Connection con = getConnection();
-             //массив из автосгенерированных в BD id в столбце student_order_id
+             //массив из авто сгенерированных в BD id в столбце student_order_id
              PreparedStatement stmt =
                      con.prepareStatement(INSERT_ORDER, new String[]{"student_order_id"}))
         {
@@ -101,8 +107,8 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 
                 stmt.executeUpdate();//возвращает количество записей, затронутых изменениями
 
-                ResultSet gkRs = stmt.getGeneratedKeys();//возвращает  авто-сгенерированные в BD поля
-                // возвращение авто-сгенерированного идентификатора студ.заявления
+                ResultSet gkRs = stmt.getGeneratedKeys();//возвращает авто-сгенерированные в BD поля
+                // возвращение авто-сгенерированного идентификатора студ. заявления
                 if (gkRs.next()) {
                     //получить значение из первого столбца таблицы student_order
                     result = gkRs.getLong(1);
@@ -112,10 +118,12 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
                 saveChildren(con, so, result);
 
                 con.commit();// если все ок, проводим транзакцию
-            } catch (SQLException ex) {
+          } catch (SQLException ex) {
                 con.rollback();
+                throw ex;
             }
         } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex); //запись в лог сведений об ошибках
             throw new DaoException(ex);
         }
         return result;
@@ -213,6 +221,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 
             rs.close();
         } catch (SQLException ex) { //если будет SQLExc, создается свой экземпляр
+            logger.error(ex.getMessage(), ex);
             throw new DaoException(ex);
         }
         return result; // список с заявками
@@ -236,6 +245,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
         findChildren(con,result);
             rs.close();
         } catch (SQLException ex) { //если будет SQLExc, создается свой экземпляр
+            logger.error(ex.getMessage(), ex);
             throw new DaoException(ex);
         }
         return result; //список с заявками

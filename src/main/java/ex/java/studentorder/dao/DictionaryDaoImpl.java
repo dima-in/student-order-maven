@@ -6,12 +6,16 @@ import ex.java.studentorder.domain.PassportOffice;
 import ex.java.studentorder.domain.RegisterOffice;
 import ex.java.studentorder.domain.Street;
 import ex.java.studentorder.exception.DaoException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 // класс для доступа к БД
 public class DictionaryDaoImpl implements DictionaryDao{
+    private static  final Logger logger =
+            LoggerFactory.getLogger(DictionaryDaoImpl.class);
     // date access object обьект для доступа к данным
     // подключнеие к postgreSql
     // выделение отдельного метода для получения коннекта
@@ -42,6 +46,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
                 result.add(str);
             }
         } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex);
             throw new DaoException(ex);
         }
         return result;
@@ -62,6 +67,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
                 resultP.add(passportOffice);
             }
         } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex);
             throw new DaoException(ex);
         }
         return resultP;
@@ -83,6 +89,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
                 resultR.add(registerOffice);
             }
         } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex);
             throw new DaoException(ex);
         }
         return resultR;
@@ -106,6 +113,7 @@ public class DictionaryDaoImpl implements DictionaryDao{
                 resultA.add(countryArea);
             }
         } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex);
             throw new DaoException(ex);
         }
         return resultA;

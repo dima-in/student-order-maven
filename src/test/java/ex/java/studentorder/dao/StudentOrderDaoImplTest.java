@@ -21,6 +21,13 @@ public class StudentOrderDaoImplTest {
         Long ID = new StudentOrderDaoImpl().saveStudentOrder(so);
     }
 
+    @Test(expected = DaoException.class)
+    public void saveStudentOrderError() throws DaoException {
+        StudentOrder so = buildStudentOrder(10);
+        so.getHusband().setSurName(null);
+        Long ID = new StudentOrderDaoImpl().saveStudentOrder(so);
+    }
+
     @Test
     public void getStudentOrders() throws DaoException {
         List<StudentOrder> list = new StudentOrderDaoImpl().getStudentOrders();
